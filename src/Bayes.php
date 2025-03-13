@@ -1,5 +1,5 @@
 <?php
-namespace Niiknow;
+namespace Sphamster;
 
 /**
  * Naive-Bayes Classifier
