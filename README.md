@@ -1,5 +1,10 @@
 # `Bayes`: A Naive-Bayes classifier for PHP 8
 
+![GitHub Tag](https://img.shields.io/github/v/tag/sphamster/bayes)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/sphamster/bayes/test.yml)
+![Static Badge](https://img.shields.io/badge/license-MIT-blue?style=flat)
+
+
 `Bayes` takes a document (piece of text), and tells you what category that document belongs to.
 
 This library is a fork from php lib @ https://github.com/niiknow/bayes
