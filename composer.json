@@ -1,39 +1,30 @@
 {
-  "name": "niiknow/bayes",
-  "description": "a machine learning lib",
-  "keywords": [
-    "bayes",
-    "lib",
-    "library",
-    "niiknow",
-    "naive-bayes-classifier",
-    "naive-bayes",
-    "naive-bayes-algorithm",
-    "naivebayes",
-    "naive",
-    "machine-learning",
-    "machine-learning-algorithm",
-    "classifier",
-    "php-ml",
-    "php",
-    "php-library",
-    "naive-bayes-classification"
-  ],
+  "name": "sphamster/bayes",
+  "description": "Bayes machine learning",
+  "type": "library",
   "license": "MIT",
   "authors": [{
-    "name": "Tom Noogen",
-    "email": "friends@niiknow.org"
+    "name": "Andrea Civita",
+    "email": "andreacivita994@gmail.com"
   }],
-  "type": "library",
+  "keywords": [
+    "php-ml",
+    "php-library",
+    "naive-bayes"
+  ],
   "require": {
-    "php": ">=7.4"
+    "php": "^8.2"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.5.0"
+    "phpstan/phpstan": "^2.1.8",
+    "pestphp/pest": "^3.7.4",
+    "laravel/pint": "^1.21.1",
+    "pestphp/pest-plugin-type-coverage": "^3.3",
+    "rector/rector": "^2.0.10"
   },
   "autoload": {
     "psr-4": {
-      "Niiknow\\": "src/"
+      "Sphamster\\": "src/"
     }
   },
   "autoload-dev": {
@@ -42,13 +33,29 @@
     }
   },
   "config": {
-    "prefer-install": "dist"
+    "prefer-install": "dist",
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "prefer-stable": true,
   "scripts": {
+    "lint": "pint",
+    "refactor": "rector",
+    "pre-commit": [
+      "@refactor",
+      "@lint"
+    ],
+    "test:refactor": "rector --dry-run",
+    "test:lint": "pint --test",
+    "test:types": "phpstan analyse --ansi",
+    "test:unit": "pest",
     "test": [
-        "phpunit tests/*.php"
+      "@test:refactor",
+      "@test:lint",
+      "@test:types",
+      "@test:unit"
     ]
   }
 }
