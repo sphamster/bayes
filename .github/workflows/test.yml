@@ -1,0 +1,91 @@
+name: CI - PHP Tests
+
+on:
+    pull_request:
+        branches:
+            - master
+
+jobs:
+    test-refactor:
+        name: Rector (Refactor Check)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+                  tools: composer
+
+            - name: Install Dependencies
+              run: composer install --no-progress --prefer-dist
+
+            - name: Run Rector
+              run: composer test:refactor
+
+    test-lint:
+        name: Pint (Lint Check)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  tools: composer
+
+            - name: Install Dependencies
+              run: composer install --no-progress --prefer-dist
+
+            - name: Run Pint
+              run: composer test:lint
+
+    test-types:
+        name: PHPStan (Static Analysis)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+                  tools: composer
+
+            - name: Install Dependencies
+              run: composer install --no-progress --prefer-dist
+
+            - name: Run PHPStan
+              run: composer test:types
+
+    test-unit:
+        name: Pest (Unit Tests + Coverage)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+                  tools: composer
+                  coverage: xdebug  # Abilita Xdebug per la code coverage
+
+            - name: Install Dependencies
+              run: composer install --no-progress --prefer-dist
+
+            - name: Run Pest Tests with Coverage
+              run: composer test:unit -colors=always --coverage --parallel --min=100,
+
+    test-aggregate:
+        name: Aggregate Test Status
+        needs: [test-refactor, test-lint, test-types, test-unit]
+        runs-on: ubuntu-latest
+        steps:
+            - name: All Tests Passed
+              run: echo "All test jobs completed successfully!"
