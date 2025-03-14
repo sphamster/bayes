@@ -42,17 +42,19 @@
   "minimum-stability": "stable",
   "prefer-stable": true,
   "scripts": {
-    "refacto": "rector",
     "lint": "pint",
-    "test:refacto": "rector --dry-run",
+    "refactor": "rector",
+    "pre-commit": [
+      "@refactor",
+      "@lint"
+    ],
+    "test:refactor": "rector --dry-run",
     "test:lint": "pint --test",
-    "test:typos": "peck",
     "test:types": "phpstan analyse --ansi",
-    "test:unit": "pest --colors=always --coverage --parallel --min=100",
+    "test:unit": "pest",
     "test": [
-      "@test:refacto",
+      "@test:refactor",
       "@test:lint",
-      "@test:typos",
       "@test:types",
       "@test:unit"
     ]

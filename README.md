@@ -1,12 +1,15 @@
-# `bayes`: A Naive-Bayes classifier for PHP
-[![Build Status](https://travis-ci.org/niiknow/bayes.svg?branch=master)](https://travis-ci.org/niiknow/bayes)
+<p align="center">
+<picture>
+ <source media="(prefers-color-scheme: dark)" srcset="./public/logo.png" width="250">
+ <img alt="sphamster logo" src="./arts/logo.png" width="250">
+</picture>
+</p>
 
-`bayes` takes a document (piece of text), and tells you what category that document belongs to.
+# `Bayes`: A Naive-Bayes classifier for PHP 8
 
-This library was ported from a nodejs lib @ https://github.com/ttezel/bayes
+`Bayes` takes a document (piece of text), and tells you what category that document belongs to.
 
-* Proven and popular classifier in nodejs - https://www.npmjs.com/package/bayes
-* We kept the json serialization signature so you can simply use the learned/trained json output from both PHP and nodejs library.
+This library is a fork from php lib @ https://github.com/niiknow/bayes
 
 ## What can I use this for?
 
@@ -16,94 +19,75 @@ You can use this for categorizing any text content into any arbitrary set of **c
 - is a news article about **technology**, **politics**, or **sports** ?
 - is a piece of text expressing **positive** emotions, or **negative** emotions?
 
-## Installing
-
-```
-composer require niiknow/bayes
-```
-
 ## Usage
 
 ```php
-$classifier = new \Niiknow\Bayes();
+$classifier = new \Sphamster\Bayes();
 
 // teach it positive phrases
 
-$classifier->learn('amazing, awesome movie!! Yeah!! Oh boy.', 'positive');
-$classifier->learn('Sweet, this is incredibly, amazing, perfect, great!!', 'positive');
+$classifier->train('amazing, awesome movie!! Yeah!! Oh boy.', 'positive');
+$classifier->train('Sweet, this is incredibly, amazing, perfect, great!!', 'positive');
 
 // teach it a negative phrase
 
-$classifier->learn('terrible, shitty thing. Damn. Sucks!!', 'negative');
+$classifier->predict('terrible, shitty thing. Damn. Sucks!!', 'negative');
 
-// now ask it to categorize a document it has never seen before
+// now ask it to predict a document it has never seen before
 
-$classifier->categorize('awesome, cool, amazing!! Yay.');
+$classifier->predict('awesome, cool, amazing!! Yay.');
 // => 'positive'
 
 // serialize the classifier's state as a JSON string.
-$stateJson = $classifier->toJson();
+$stateJson = $classifier->export();
 
 // load the classifier back from its JSON representation.
-$classifier->fromJson($stateJson);
+$classifier->import($stateJson);
 
 ```
 
-## API
-
-### `$classifier = new \Niiknow\Bayes([options])`
-
-Returns an instance of a Naive-Bayes Classifier.
-
-Pass in an optional `options` object to configure the instance. If you specify a `tokenizer` function in `options`, it will be used as the instance's tokenizer.
-
-### `$classifier->learn(text, category)`
-
-Teach your classifier what `category` the `text` belongs to. The more you teach your classifier, the more reliable it becomes. It will use what it has learned to identify new documents that it hasn't seen before.
-
-### `$classifier->categorize(text)`
-
-Returns the `category` it thinks `text` belongs to. Its judgement is based on what you have taught it with **.learn()**.
-
-### `$classifier->probabilities(text)`
-
-Extract the probabilities for each known category.
-
-### `$classifier->toJson()`
-
-Returns the JSON representation of a classifier.
-
-### `$classifier->fromJson(jsonStr)`
-
-Returns a classifier instance from the JSON representation. Use this with the JSON representation obtained from `$classifier->toJson()`
-
-## Stopwords
-
-You can pass in your own tokenizer function in the constructor.  Example:
+## Setup
 
 ```
-// array containing stopwords
-$stopwords = array("der", "die", "das", "the");
-
-// escape the stopword array and implode with pipe
-$s = '~^\W*('.implode("|", array_map("preg_quote", $stopwords)).')\W+\b|\b\W+(?1)\W*$~i';
-
-$options['tokenizer'] = function($text) use ($s) {
-            // convert everything to lowercase
-            $text = mb_strtolower($text);
-
-            // remove stop words
-            $text = preg_replace($s, '', $text);
-
-            // split the words
-            preg_match_all('/[[:alpha:]]+/u', $text, $matches);
-
-            // first match list of words
-            return $matches[0];
-        };
-
-$classifier = new \niiknow\Bayes($options);
+composer require sphamster/bayes
 ```
 
-## MIT
+## Customizing the Tokenizer
 
+To use your own custom tokenizer, create a class that implements the `Tokenizer` interface and pass an instance of it to
+the `Bayes` constructor. For example:
+
+```php
+<?php
+use Sphamster\Contracts\Tokenizer;
+
+class MyCustomTokenizer implements Tokenizer
+{
+    public function tokenize(string $text): array
+    {
+        // Define your stopwords
+        $stopwords = ['der', 'die', 'das', 'the'];
+        // Build a regex pattern to match stopwords
+        $pattern = '~\b(' . implode('|', array_map('preg_quote', $stopwords)) . ')\b~i';
+        
+        // Convert the text to lowercase and remove stopwords
+        $cleanText = preg_replace($pattern, '', mb_strtolower($text));
+        
+        // Extract tokens consisting only of alphabetic characters
+        preg_match_all('/[[:alpha:]]+/u', $cleanText, $matches);
+        
+        return $matches[0] ?? [];
+    }
+}
+
+// Instantiate your custom tokenizer and pass it to XBayes
+$tokenizer = new MyCustomTokenizer();
+$classifier = new \Sphamster\Bayes(tokenizer:$tokenizer);
+
+```
+
+## Testing
+
+```bash
+  composer test
+```
