@@ -45,8 +45,12 @@ trait WithState
     {
         $decoder = (new JsonDecoder())->fromBayes($this);
 
-        /** @var array<string, mixed> $decoded_content  */
-        $decoded_content = json_decode($content, true);
+        try {
+            /** @var array<string, mixed> $decoded_content */
+            $decoded_content = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new JsonCorruptedException(previous: $e);
+        }
 
         $decoder->decode($decoded_content);
 
