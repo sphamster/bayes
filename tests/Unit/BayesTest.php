@@ -109,3 +109,10 @@ it('resets state correctly', function (): void {
         ->and($state['vocabulary'])->toBeEmpty()
         ->and($state['categoriesState'])->toBeEmpty();
 });
+
+it('throws JsonCorruptedException on malformed JSON', function (): void {
+    $bayes = new Bayes(new DefaultTokenizer());
+
+    expect(fn (): Bayes => $bayes->import('{invalid json'))
+        ->toThrow(JsonCorruptedException::class);
+});
