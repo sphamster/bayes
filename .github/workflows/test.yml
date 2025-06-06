@@ -80,7 +80,12 @@ jobs:
               run: composer install --no-progress --prefer-dist
 
             - name: Run Pest Tests with Coverage
-              run: composer test:unit -colors=always --coverage --parallel --min=100,
+              run: composer test:unit --coverage-clover coverage.xml,
+
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v5
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
 
     test-aggregate:
         name: Aggregate Test Status
