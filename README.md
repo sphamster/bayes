@@ -29,7 +29,7 @@ $classifier->train('Sweet, this is incredibly, amazing, perfect, great!!', 'posi
 
 // teach it a negative phrase
 
-$classifier->predict('terrible, shitty thing. Damn. Sucks!!', 'negative');
+$classifier->train('terrible, shitty thing. Damn. Sucks!!', 'negative');
 
 // now ask it to predict a document it has never seen before
 
@@ -78,7 +78,7 @@ class MyCustomTokenizer implements Tokenizer
     }
 }
 
-// Instantiate your custom tokenizer and pass it to XBayes
+// Instantiate your custom tokenizer and pass it to Bayes
 $tokenizer = new MyCustomTokenizer();
 $classifier = new \Sphamster\Bayes(tokenizer:$tokenizer);
 

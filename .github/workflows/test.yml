@@ -1,6 +1,9 @@
 name: CI - PHP Tests
 
 on:
+    push:
+        branches:
+            - master
     pull_request:
         branches:
             - master
@@ -74,18 +77,21 @@ jobs:
               with:
                   php-version: '8.2'
                   tools: composer
-                  coverage: xdebug  # Abilita Xdebug per la code coverage
+                  coverage: xdebug
+                  ini-values: xdebug.mode=coverage
 
             - name: Install Dependencies
               run: composer install --no-progress --prefer-dist
 
             - name: Run Pest Tests with Coverage
-              run: composer test:unit --coverage-clover coverage.xml,
+              run: composer test:unit -- --coverage --coverage-clover=coverage.xml
 
-            - name: Upload coverage reports to Codecov
+            - name: Upload results to Codecov
               uses: codecov/codecov-action@v5
               with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
+                token: ${{ secrets.CODECOV_TOKEN }}
+                slug: sphamster/bayes
+                files: coverage.xml
 
     test-aggregate:
         name: Aggregate Test Status
