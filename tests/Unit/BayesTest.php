@@ -116,3 +116,48 @@ it('throws JsonCorruptedException on malformed JSON', function (): void {
     expect(fn (): Bayes => $bayes->import('{invalid json'))
         ->toThrow(JsonCorruptedException::class);
 });
+
+it('throws JsonCorruptedException when totalDocuments is missing during import', function (): void {
+    $bayes = new Bayes(new DefaultTokenizer());
+
+    $data = [
+        'categories' => [],
+        'vocabulary' => [],
+        'vocabularySize' => 0,
+        'categoriesState' => [],
+    ];
+
+    $json = json_encode($data);
+
+    expect(fn (): Bayes => $bayes->import($json))
+        ->toThrow(JsonCorruptedException::class);
+});
+
+it('throws JsonCorruptedException when vocabulary is missing during import', function (): void {
+    $bayes = new Bayes(new DefaultTokenizer());
+
+    $data = [
+        'totalDocuments' => [],
+        'categories' => [],
+        'categoriesState' => [],
+    ];
+
+    $json = json_encode($data);
+
+    expect(fn (): Bayes => $bayes->import($json))
+        ->toThrow(JsonCorruptedException::class);
+});
+
+it('throws JsonCorruptedException when categories is missing during import', function (): void {
+    $bayes = new Bayes(new DefaultTokenizer());
+
+    $data = [
+        'totalDocuments' => [],
+        'vocabulary' => [],
+    ];
+
+    $json = json_encode($data);
+
+    expect(fn (): Bayes => $bayes->import($json))
+        ->toThrow(JsonCorruptedException::class);
+});
