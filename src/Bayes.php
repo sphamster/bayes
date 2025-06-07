@@ -135,29 +135,6 @@ class Bayes implements Exportable, Importable
         return ($tokenFrequency + 1) / ($category->getWordCount() + $this->vocabulary->size());
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function getState(): array
-    {
-        $categoriesState = array_map(
-            fn ($data): array => [
-                'docCount' => $data->docCount(),
-                'wordCount' => $data->getWordCount(),
-                'wordFrequencyCount' => $data->getWordFrequencyCount(),
-            ],
-            $this->state->categories()
-        );
-
-        return [
-            'categories' => array_keys($this->state->categories()),
-            'totalDocuments' => $this->state->totalDocuments(),
-            'vocabulary' => $this->vocabulary->tokens(),
-            'vocabularySize' => $this->vocabulary->size(),
-            'categoriesState' => $categoriesState,
-        ];
-    }
-
     public function reset(): static
     {
         $this->state = new State();

@@ -3,7 +3,7 @@
 ![GitHub Tag](https://img.shields.io/github/v/tag/sphamster/bayes)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/sphamster/bayes/test.yml)
 ![Static Badge](https://img.shields.io/badge/license-MIT-blue?style=flat)
-
+[![codecov](https://codecov.io/gh/sphamster/bayes/graph/badge.svg?token=LUNB5R5SKZ)](https://codecov.io/gh/sphamster/bayes)
 
 `Bayes` takes a document (piece of text), and tells you what category that document belongs to.
 
@@ -33,8 +33,7 @@ $classifier->train('terrible, shitty thing. Damn. Sucks!!', 'negative');
 
 // now ask it to predict a document it has never seen before
 
-$classifier->predict('awesome, cool, amazing!! Yay.');
-// => 'positive'
+$classifier->predict('awesome, cool, amazing!! Yay.'); // => 'positive'
 
 // serialize the classifier's state as a JSON string.
 $stateJson = $classifier->export();
