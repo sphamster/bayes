@@ -28,5 +28,6 @@ docker-compose.yml
 ._*.png
 dist.zip
 .php*.cache
-
+.claude/
+CLAUDE.md
 playbook/recipe/downloaded/

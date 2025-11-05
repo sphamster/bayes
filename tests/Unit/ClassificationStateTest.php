@@ -30,7 +30,7 @@ it('increments total documents correctly', function (): void {
 });
 
 it('sets total documents correctly', function (): void {
-    $this->state->setTotalDocuments(10);
+    $this->state->totalDocuments(10);
     expect($this->state->totalDocuments())->toBe(10);
 });
 

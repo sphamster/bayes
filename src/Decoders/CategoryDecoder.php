@@ -26,10 +26,10 @@ class CategoryDecoder implements Decoder
                 }
                 $category = $this->classifier->state()->category($categoryKey);
 
-                $category->setDocCount($this->extractDocCount($categoryData));
-                $category->setWordCount($this->extractWordCount($categoryData));
+                $category->docCount($this->extractDocCount($categoryData));
+                $category->wordCount($this->extractWordCount($categoryData));
                 /** @phpstan-ignore-next-line argument.type */
-                $category->setWordFrequencyCount($this->extractFrequencyCount($categoryData));
+                $category->wordFrequencyCount($this->extractFrequencyCount($categoryData));
             }
         }
     }

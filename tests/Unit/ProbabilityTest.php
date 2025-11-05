@@ -22,3 +22,14 @@ it('converts log probability to decimal correctly', function (): void {
     $expectedDecimal = exp($logValue);
     expect($probability->decimal())->toBe($expectedDecimal);
 });
+
+it('creates a new instance from decimal value', function (): void {
+    $decimal_value = 0.5;
+    $new_probability = Probability::fromDecimal('test', $decimal_value);
+
+    // Verify the new instance has the correct values
+    expect($new_probability)->toBeInstanceOf(Probability::class)
+        ->and($new_probability->category())->toBe('test')
+        ->and($new_probability->log())->toBe(log($decimal_value))
+        ->and($new_probability->decimal())->toEqual($decimal_value);
+});
