@@ -15,18 +15,17 @@ trait WithState
      */
     public function getState(): array
     {
-        $categoriesState = array_map(fn ($data): array => [
-            'docCount' => $data->docCount(),
-            'wordCount' => $data->getWordCount(),
-            'wordFrequencyCount' => $data->getWordFrequencyCount(),
-        ], $this->state->categories());
+        $categories_state = array_map(
+            fn ($category): array => $category->toArray(),
+            $this->state->categories()
+        );
 
         return [
             'categories' => array_keys($this->state->categories()),
             'totalDocuments' => $this->state->totalDocuments(),
             'vocabulary' => $this->vocabulary->tokens(),
             'vocabularySize' => $this->vocabulary->size(),
-            'categoriesState' => $categoriesState,
+            'categoriesState' => $categories_state,
         ];
     }
 
@@ -57,4 +56,39 @@ trait WithState
         return $this;
     }
 
+    /**
+     * Returns the current classification state.
+     *
+     * @return \Sphamster\Support\Classification\State The state instance containing categories and document counts
+     */
+    public function state(): \Sphamster\Support\Classification\State
+    {
+        return $this->state;
+    }
+
+    /**
+     * Returns the vocabulary containing all unique tokens seen during training.
+     *
+     * @return \Sphamster\Support\Vocabularies\Vocabulary The vocabulary instance
+     */
+    public function vocabulary(): \Sphamster\Support\Vocabularies\Vocabulary
+    {
+        return $this->vocabulary;
+    }
+
+    /**
+     * Resets the classifier to its initial state.
+     *
+     * Clears all training data including categories, document counts,
+     * and vocabulary.
+     *
+     * @return static Returns $this for method chaining
+     */
+    public function reset(): static
+    {
+        $this->state = new \Sphamster\Support\Classification\State();
+        $this->vocabulary = new \Sphamster\Support\Vocabularies\Vocabulary();
+
+        return $this;
+    }
 }

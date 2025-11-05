@@ -22,6 +22,6 @@ class TotalDocumentDecoder implements Decoder
             throw new JsonCorruptedException();
         }
 
-        $this->classifier->state()->setTotalDocuments((int) $data['totalDocuments']);
+        $this->classifier->state()->totalDocuments((int) $data['totalDocuments']);
     }
 }

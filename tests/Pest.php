@@ -28,6 +28,22 @@ declare(strict_types=1);
 
 expect()->extend('toBeOne', fn () => $this->toBe(1));
 
+/**
+ * Custom expectation to verify that an array of Probability objects
+ * has normalized probabilities (sum equals 1.0 within floating-point tolerance).
+ *
+ * Usage: expect($probabilities)->toBeNormalized();
+ */
+expect()->extend('toBeNormalized', function (): void {
+    $sum = 0.0;
+    foreach ($this->value as $probability) {
+        $sum += $probability->decimal();
+    }
+
+    expect($sum)->toBeGreaterThan(0.999)
+        ->and($sum)->toBeLessThan(1.001);
+});
+
 /*
 |--------------------------------------------------------------------------
 | Functions

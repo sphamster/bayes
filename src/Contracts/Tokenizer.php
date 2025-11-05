@@ -7,7 +7,10 @@ namespace Sphamster\Contracts;
 interface Tokenizer
 {
     /**
-     * @return array<int, string> L'array dei token.
+     * Tokenizes input text into an array of string tokens.
+     *
+     * @param string $text The text to tokenize
+     * @return array<int, string> The array of tokens
      */
     public function tokenize(string $text): array;
 }

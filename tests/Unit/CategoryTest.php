@@ -13,8 +13,8 @@ beforeEach(function (): void {
 
 it('has an initial state', function (): void {
     expect($this->category->docCount())->toBe(0)
-        ->and($this->category->getWordCount())->toBe(0)
-        ->and($this->category->getWordFrequencyCount())->toEqual([]);
+        ->and($this->category->wordCount())->toBe(0)
+        ->and($this->category->wordFrequencyCount())->toEqual([]);
 });
 
 it('increments correctly docCount', function (): void {
@@ -26,7 +26,7 @@ it('increments correctly docCount', function (): void {
 });
 
 it('assign correctly docCount', function (): void {
-    $this->category->setDocCount(5);
+    $this->category->docCount(5);
     expect($this->category->docCount())->toBe(5);
 });
 
@@ -35,19 +35,19 @@ it('adds correctly tokens frequency and updates wordCount', function (): void {
     $this->category->addWordFrequency('world', 3);
     $this->category->addWordFrequency('hello', 1);
 
-    expect($this->category->getWordFrequencyCount())->toEqual([
+    expect($this->category->wordFrequencyCount())->toEqual([
         'hello' => 3,
         'world' => 3,
     ])
-        ->and($this->category->getWordCount())->toBe(6);
+        ->and($this->category->wordCount())->toBe(6);
 });
 
 it('assign correctly wordCount and wordFrequencyCount', function (): void {
-    $this->category->setWordCount(10);
-    $this->category->setWordFrequencyCount(['foo' => 4, 'bar' => 6]);
+    $this->category->wordCount(10);
+    $this->category->wordFrequencyCount(['foo' => 4, 'bar' => 6]);
 
-    expect($this->category->getWordCount())->toBe(10)
-        ->and($this->category->getWordFrequencyCount())->toEqual([
+    expect($this->category->wordCount())->toBe(10)
+        ->and($this->category->wordFrequencyCount())->toEqual([
             'foo' => 4,
             'bar' => 6,
         ]);
@@ -58,11 +58,11 @@ it('resets correctly', function (): void {
     $this->category->addWordFrequency('test', 5);
 
     expect($this->category->docCount())->toBeGreaterThan(0)
-        ->and($this->category->getWordCount())->toBeGreaterThan(0);
+        ->and($this->category->wordCount())->toBeGreaterThan(0);
 
     $this->category->reset();
 
     expect($this->category->docCount())->toBe(0)
-        ->and($this->category->getWordCount())->toBe(0)
-        ->and($this->category->getWordFrequencyCount())->toEqual([]);
+        ->and($this->category->wordCount())->toBe(0)
+        ->and($this->category->wordFrequencyCount())->toEqual([]);
 });
