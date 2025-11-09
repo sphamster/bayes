@@ -31,3 +31,5 @@ dist.zip
 .claude/
 CLAUDE.md
 playbook/recipe/downloaded/
+coverage-report/
+coverage.xml

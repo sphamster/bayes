@@ -11,6 +11,7 @@ use Sphamster\Contracts\Tokenizer;
 use Sphamster\Support\Classification\State;
 use Sphamster\Support\FrequencyTables\FrequencyTable;
 use Sphamster\Support\Probability;
+use Sphamster\Support\Statistics\TrainingStats;
 use Sphamster\Support\Tokenizers\DefaultTokenizer;
 use Sphamster\Support\Vocabularies\Vocabulary;
 
@@ -145,5 +146,52 @@ abstract class Bayes implements Exportable, Importable
         $frequency_table->addTokens($tokens);
 
         return $frequency_table;
+    }
+
+    /**
+     * Returns comprehensive training statistics for this classifier.
+     *
+     * Provides detailed information about the training data including:
+     * - Global metrics (total documents, vocabulary size, categories)
+     * - Class balance analysis
+     * - Most common tokens across all categories
+     * - Per-category statistics
+     *
+     * @return TrainingStats The training statistics instance
+     */
+    public function getTrainingStats(): TrainingStats
+    {
+        return new TrainingStats($this->state, $this->vocabulary);
+    }
+
+    /**
+     * Returns the most frequent tokens in a specific category.
+     *
+     * This is a convenience method that provides quick access to top tokens
+     * for a single category without needing to create a full TrainingStats instance.
+     *
+     * @param string $category The category name to analyze
+     * @param int $limit The maximum number of tokens to return (default: 10)
+     * @return array<string, int> Map of tokens to their frequencies, sorted by frequency descending
+     */
+    public function getTopTokens(string $category, int $limit = 10): array
+    {
+        $stats = $this->getTrainingStats();
+        return $stats->categoryStats($category)->topTokens($limit);
+    }
+
+    /**
+     * Returns the most common tokens across all categories.
+     *
+     * This is a convenience method that aggregates token frequencies from all
+     * categories and returns the most frequently occurring tokens overall.
+     *
+     * @param int $limit The maximum number of tokens to return (default: 10)
+     * @return array<string, int> Map of tokens to their total frequencies, sorted by frequency descending
+     */
+    public function getMostCommonTokens(int $limit = 10): array
+    {
+        $stats = $this->getTrainingStats();
+        return $stats->mostCommonTokens($limit);
     }
 }
