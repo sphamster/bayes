@@ -340,3 +340,73 @@ it('returns empty array when state has documents but no categories', function ()
     $probabilities = $bayes->probabilities('some text');
     expect($probabilities)->toBeEmpty();
 });
+
+it('returns training statistics', function (): void {
+    $bayes = new SingleLabelBayes(new DefaultTokenizer());
+
+    $bayes->train('amazing awesome movie', 'positive');
+    $bayes->train('great film', 'positive');
+    $bayes->train('terrible bad', 'negative');
+
+    $stats = $bayes->getTrainingStats();
+
+    expect($stats)->toBeInstanceOf(Sphamster\Support\Statistics\TrainingStats::class)
+        ->and($stats->totalDocuments())->toBe(3)
+        ->and($stats->numCategories())->toBe(2)
+        ->and($stats->vocabularySize())->toBeGreaterThan(0);
+});
+
+it('returns top tokens for specific category', function (): void {
+    $bayes = new SingleLabelBayes(new DefaultTokenizer());
+
+    $bayes->train('buy buy buy now free', 'spam');
+    $bayes->train('buy now', 'spam');
+
+    $top_tokens = $bayes->getTopTokens('spam', 2);
+
+    expect($top_tokens)->toBeArray()
+        ->and($top_tokens)->toHaveKey('buy')
+        ->and($top_tokens['buy'])->toBe(4); // 'buy' appears 4 times total
+});
+
+it('returns most common tokens across all categories', function (): void {
+    $bayes = new SingleLabelBayes(new DefaultTokenizer());
+
+    $bayes->train('good good good', 'positive');
+    $bayes->train('bad bad', 'negative');
+    $bayes->train('good', 'positive');
+
+    $common_tokens = $bayes->getMostCommonTokens(2);
+
+    expect($common_tokens)->toBeArray()
+        ->and($common_tokens)->toHaveKey('good')
+        ->and($common_tokens['good'])->toBe(4); // 'good' appears 4 times total
+});
+
+it('returns empty training statistics for untrained classifier', function (): void {
+    $bayes = new SingleLabelBayes(new DefaultTokenizer());
+
+    $stats = $bayes->getTrainingStats();
+
+    expect($stats->totalDocuments())->toBe(0)
+        ->and($stats->numCategories())->toBe(0)
+        ->and($stats->vocabularySize())->toBe(0);
+});
+
+it('returns empty array for top tokens on non-existent category', function (): void {
+    $bayes = new SingleLabelBayes(new DefaultTokenizer());
+
+    $bayes->train('hello world', 'greeting');
+
+    $top_tokens = $bayes->getTopTokens('nonexistent');
+
+    expect($top_tokens)->toBeEmpty();
+});
+
+it('returns empty array for most common tokens on untrained classifier', function (): void {
+    $bayes = new SingleLabelBayes(new DefaultTokenizer());
+
+    $common_tokens = $bayes->getMostCommonTokens();
+
+    expect($common_tokens)->toBeEmpty();
+});
